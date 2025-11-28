@@ -1,7 +1,9 @@
 package com.cms.service.impl;
 
+import com.cms.entity.Score;
 import com.cms.entity.ScoreDispute;
 import com.cms.dao.ScoreDisputeDao;
+import com.cms.dto.ScoreDTO;
 import com.cms.dto.ScoreDisputeDTO;
 import com.cms.service.ScoreDisputeService;
 import com.cms.service.ScoreService;
@@ -60,8 +62,30 @@ public class ScoreDisputeServiceImpl implements ScoreDisputeService {
         
         // 如果审核通过，需要更新成绩
         if ("通过".equals(scoreDispute.getAuditStatus())) {
-            // 这里可以添加更新成绩的逻辑
-            // 例如：根据studentId和courseId查询成绩，然后更新
+            // 检查是否提供了新成绩
+            if (scoreDisputeDTO.getNewScore() == null) {
+                throw new RuntimeException("审核通过时必须提供新成绩");
+            }
+            
+            // 根据studentId和courseId查询当前成绩
+            Score currentScore = scoreService.getScoreByStudentAndCourse(
+                    existingDispute.getStudentId(), existingDispute.getCourseId());
+            
+            if (currentScore != null) {
+                // 创建ScoreDTO对象，设置新的成绩值
+                ScoreDTO scoreDTO = new ScoreDTO();
+                scoreDTO.setScoreId(currentScore.getScoreId());
+                scoreDTO.setStudentId(currentScore.getStudentId());
+                scoreDTO.setCourseId(currentScore.getCourseId());
+                scoreDTO.setScore(scoreDisputeDTO.getNewScore());
+                scoreDTO.setInputTeacherId(scoreDisputeDTO.getAuditUserId());
+                scoreDTO.setStatus(currentScore.getStatus());
+                
+                // 更新成绩
+                scoreService.updateScore(scoreDTO);
+            } else {
+                throw new RuntimeException("未找到对应的成绩记录");
+            }
         }
         
         return scoreDispute;

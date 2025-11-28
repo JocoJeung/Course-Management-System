@@ -49,4 +49,9 @@ public class ScoreDisputeDTO {
      * 审核人ID
      */
     private String auditUserId;
+    
+    /**
+     * 新成绩（审核通过时使用）
+     */
+    private Double newScore;
 }
