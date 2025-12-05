@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cms.dao.CourseDao">
+    <!-- 插入课程记录 -->
+    <insert id="insertCourse" parameterType="com.cms.entity.Course">
+        INSERT INTO course (course_id, course_name, credit, course_type, teacher_id, class_time, class_location, capacity, selected_num, intro, create_time, update_time)
+        VALUES (#{courseId}, #{courseName}, #{credit}, #{courseType}, #{teacherId}, #{classTime}, #{classLocation}, #{capacity}, #{selectedNum}, #{intro}, #{createTime}, #{updateTime})
+    </insert>
+    
+    <!-- 更新课程记录 -->
+    <update id="updateCourse" parameterType="com.cms.entity.Course">
+        UPDATE course
+        SET course_name = #{courseName},
+            credit = #{credit},
+            course_type = #{courseType},
+            teacher_id = #{teacherId},
+            class_time = #{classTime},
+            class_location = #{classLocation},
+            capacity = #{capacity},
+            intro = #{intro},
+            update_time = #{updateTime}
+        WHERE course_id = #{courseId}
+    </update>
+    
+    <!-- 根据课程号删除课程记录 -->
+    <delete id="deleteCourseById" parameterType="java.lang.String">
+        DELETE FROM course WHERE course_id = #{courseId}
+    </delete>
+    
+    <!-- 根据课程号查询课程记录 -->
+    <select id="selectCourseById" parameterType="java.lang.String" resultType="com.cms.entity.Course">
+        SELECT * FROM course WHERE course_id = #{courseId}
+    </select>
+    
+    <!-- 查询所有课程列表 -->
+    <select id="selectAllCourses" resultType="com.cms.entity.Course">
+        SELECT * FROM course
+    </select>
+    
+    <!-- 根据教师ID查询课程列表 -->
+    <select id="selectCoursesByTeacherId" parameterType="java.lang.String" resultType="com.cms.entity.Course">
+        SELECT * FROM course WHERE teacher_id = #{teacherId}
+    </select>
+    
+    <!-- 根据课程类型查询课程列表 -->
+    <select id="selectCoursesByType" parameterType="java.lang.String" resultType="com.cms.entity.Course">
+        SELECT * FROM course WHERE course_type = #{courseType}
+    </select>
+    
+    <!-- 根据课程名称模糊查询课程列表 -->
+    <select id="selectCoursesByName" parameterType="java.lang.String" resultType="com.cms.entity.Course">
+        SELECT * FROM course WHERE course_name LIKE CONCAT('%', #{courseName}, '%')
+    </select>
+    
+    <!-- 更新课程已选人数 -->
+    <update id="updateCourseSelectedNum">
+        UPDATE course
+        SET selected_num = selected_num + #{changeNum},
+            update_time = CURRENT_TIMESTAMP
+        WHERE course_id = #{courseId}
+    </update>
+</mapper>

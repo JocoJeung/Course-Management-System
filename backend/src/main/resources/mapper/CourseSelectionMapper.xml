@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cms.dao.CourseSelectionDao">
+    <!-- 插入选课记录 -->
+    <insert id="insertCourseSelection" parameterType="com.cms.entity.CourseSelection">
+        INSERT INTO course_selection (student_id, course_id, selection_time, status, fail_reason)
+        VALUES (#{studentId}, #{courseId}, #{selectionTime}, #{status}, #{failReason})
+    </insert>
+    
+    <!-- 更新选课记录 -->
+    <update id="updateCourseSelection" parameterType="com.cms.entity.CourseSelection">
+        UPDATE course_selection
+        SET status = #{status},
+            fail_reason = #{failReason}
+        WHERE selection_id = #{selectionId}
+    </update>
+    
+    <!-- 根据选课记录ID删除选课记录 -->
+    <delete id="deleteCourseSelectionById" parameterType="java.lang.Integer">
+        DELETE FROM course_selection WHERE selection_id = #{selectionId}
+    </delete>
+    
+    <!-- 根据学号和课程号删除选课记录 -->
+    <delete id="deleteCourseSelectionByStudentAndCourse">
+        DELETE FROM course_selection WHERE student_id = #{studentId} AND course_id = #{courseId}
+    </delete>
+    
+    <!-- 根据选课记录ID查询选课记录 -->
+    <select id="selectCourseSelectionById" parameterType="java.lang.Integer" resultType="com.cms.entity.CourseSelection">
+        SELECT * FROM course_selection WHERE selection_id = #{selectionId}
+    </select>
+    
+    <!-- 根据学号和课程号查询选课记录 -->
+    <select id="selectCourseSelectionByStudentAndCourse" resultType="com.cms.entity.CourseSelection">
+        SELECT * FROM course_selection WHERE student_id = #{studentId} AND course_id = #{courseId}
+    </select>
+    
+    <!-- 根据学号查询选课记录列表 -->
+    <select id="selectCourseSelectionsByStudentId" parameterType="java.lang.String" resultType="com.cms.entity.CourseSelection">
+        SELECT * FROM course_selection WHERE student_id = #{studentId}
+    </select>
+    
+    <!-- 根据课程号查询选课记录列表 -->
+    <select id="selectCourseSelectionsByCourseId" parameterType="java.lang.String" resultType="com.cms.entity.CourseSelection">
+        SELECT * FROM course_selection WHERE course_id = #{courseId}
+    </select>
+    
+    <!-- 根据教师ID查询选课记录列表 -->
+    <select id="selectCourseSelectionsByTeacherId" parameterType="java.lang.String" resultType="com.cms.entity.CourseSelection">
+        SELECT cs.* FROM course_selection cs
+        JOIN course c ON cs.course_id = c.course_id
+        WHERE c.teacher_id = #{teacherId}
+    </select>
+    
+    <!-- 查询所有选课记录列表 -->
+    <select id="selectAllCourseSelections" resultType="com.cms.entity.CourseSelection">
+        SELECT * FROM course_selection
+    </select>
+</mapper>
